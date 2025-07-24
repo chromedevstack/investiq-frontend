@@ -1,71 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Startup Insight AI</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 40px;
-      background: #f9f9f9;
-    }
-    h1 {
-      color: #333;
-    }
-    textarea {
-      width: 100%;
-      height: 100px;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 10px;
-    }
-    #output {
-      margin-top: 20px;
-      white-space: pre-wrap;
-      background: #eee;
-      padding: 15px;
-      border-radius: 5px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StartupInsight AI Test</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+  #response {
+    margin-top: 20px;
+    white-space: pre-wrap;
+    background: #f0f0f0;
+    padding: 15px;
+    border-radius: 5px;
+    min-height: 50px;
+  }
+</style>
 </head>
 <body>
-  <h1>Ask the Startup Insight AI</h1>
-  <textarea id="prompt" placeholder="Enter your startup question or idea..."></textarea>
-  <br>
-  <button id="analyzeBtn">Analyze</button>
-  <div id="output">Waiting for input...</div>
 
-  <script>
-    const API_URL = "https://your-backend-url.onrender.com/generate";
+<h1>Test AI Backend - StartupInsight</h1>
 
-    document.getElementById("analyzeBtn").addEventListener("click", async () => {
-      const prompt = document.getElementById("prompt").value.trim();
-      if (!prompt) {
-        alert("Please enter a prompt!");
-        return;
-      }
+<button id="aiFactBtn">Get AI Fact</button>
 
-      const outputElem = document.getElementById("output");
-      outputElem.textContent = "Loading...";
+<div id="response">AI response will appear here...</div>
 
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt })
-        });
+<script>
+  const backendURL = 'https://startupinsight-backend.onrender.com/chat'; // Adjust if your endpoint is different
 
-        if (!response.ok) throw new Error("Network response was not ok");
+  document.getElementById('aiFactBtn').addEventListener('click', () => {
+    const prompt = "Tell me a random AI fact.";
 
-        const data = await response.json();
-        outputElem.textContent = data.output;
-      } catch (error) {
-        outputElem.textContent = "Error: " + error.message;
-      }
+    fetch(backendURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message: prompt })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Network response was not OK');
+      return res.json();
+    })
+    .then(data => {
+      // Adjust this if your API response format is different
+      const aiText = data.reply || JSON.stringify(data);
+      document.getElementById('response').textContent = aiText;
+    })
+    .catch(err => {
+      document.getElementById('response').textContent = 'Error: ' + err.message;
     });
-  </script>
+  });
+</script>
+
 </body>
 </html>
