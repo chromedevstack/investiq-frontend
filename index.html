@@ -7,13 +7,27 @@
 <style>
   body {
     font-family: Arial, sans-serif;
-    max-width: 600px;
+    max-width: 700px;
     margin: 2rem auto;
     padding: 1rem;
+  }
+  header {
+    background: #222;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #status {
+    font-weight: bold;
   }
   button {
     padding: 10px 20px;
     font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
   }
   #response {
     margin-top: 20px;
@@ -21,44 +35,127 @@
     background: #f0f0f0;
     padding: 15px;
     border-radius: 5px;
-    min-height: 50px;
+    min-height: 80px;
+  }
+  form > div {
+    margin-top: 15px;
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
   }
 </style>
 </head>
 <body>
 
-<h1>Test AI Backend - StartupInsight</h1>
+<header>
+  <h1>StartupInsight AI Test</h1>
+  <div>Backend Status: <span id="status">Unknown</span></div>
+</header>
 
-<button id="aiFactBtn">Get AI Fact</button>
+<section>
+  <button id="checkStatusBtn">Check Backend Status</button>
+</section>
 
-<div id="response">AI response will appear here...</div>
+<section>
+  <h2>Get AI Fact</h2>
+  <button id="aiFactBtn">Generate AI Fact</button>
+</section>
+
+<section>
+  <h2>Ask a Question from URL</h2>
+  <form id="askForm">
+    <div>
+      <label for="question">Question:</label>
+      <input type="text" id="question" placeholder="Type your question here" required />
+    </div>
+    <div>
+      <label for="url">URL to scrape:</label>
+      <input type="text" id="url" placeholder="https://example.com" required />
+    </div>
+    <button type="submit">Ask</button>
+  </form>
+</section>
+
+<section>
+  <h2>Response</h2>
+  <div id="response">AI response will appear here...</div>
+</section>
 
 <script>
-  const backendURL = 'https://startupinsight-backend.onrender.com/chat'; // Adjust if your endpoint is different
+  const backendBaseURL = 'https://startupinsight-backend.onrender.com';
 
-  document.getElementById('aiFactBtn').addEventListener('click', () => {
-    const prompt = "Tell me a random AI fact.";
+  const statusEl = document.getElementById('status');
+  const responseEl = document.getElementById('response');
 
-    fetch(backendURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ message: prompt })
-    })
-    .then(res => {
-      if (!res.ok) throw new Error('Network response was not OK');
-      return res.json();
-    })
-    .then(data => {
-      // Adjust this if your API response format is different
-      const aiText = data.reply || JSON.stringify(data);
-      document.getElementById('response').textContent = aiText;
-    })
-    .catch(err => {
-      document.getElementById('response').textContent = 'Error: ' + err.message;
-    });
+  async function checkBackendStatus() {
+    try {
+      const res = await fetch(backendBaseURL + '/');
+      if (!res.ok) throw new Error('Status response not OK');
+      const text = await res.text();
+      statusEl.textContent = 'Online';
+      statusEl.style.color = 'limegreen';
+      responseEl.textContent = 'Backend says: ' + text;
+    } catch (e) {
+      statusEl.textContent = 'Offline';
+      statusEl.style.color = 'red';
+      responseEl.textContent = 'Error connecting to backend: ' + e.message;
+    }
+  }
+
+  document.getElementById('checkStatusBtn').addEventListener('click', checkBackendStatus);
+
+  document.getElementById('aiFactBtn').addEventListener('click', async () => {
+    responseEl.textContent = 'Loading AI fact...';
+    try {
+      const res = await fetch(backendBaseURL + '/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: 'Tell me a random AI fact.' })
+      });
+      if (!res.ok) throw new Error('Response not OK');
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      responseEl.textContent = data.output || 'No output returned.';
+    } catch (e) {
+      responseEl.textContent = 'Error: ' + e.message;
+    }
   });
+
+  document.getElementById('askForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const question = document.getElementById('question').value.trim();
+    const url = document.getElementById('url').value.trim();
+    if (!question || !url) {
+      responseEl.textContent = 'Please fill both question and URL fields.';
+      return;
+    }
+
+    responseEl.textContent = 'Searching for answer...';
+
+    try {
+      const res = await fetch(backendBaseURL + '/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, url })
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => null);
+        throw new Error(errData?.error || 'Response not OK');
+      }
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      responseEl.textContent = 
+        `Q: ${data.question}\nA: ${data.answer}\nConfidence: ${(data.score * 100).toFixed(2)}%`;
+    } catch (e) {
+      responseEl.textContent = 'Error: ' + e.message;
+    }
+  });
+
+  // On page load, check status automatically
+  checkBackendStatus();
 </script>
 
 </body>
