@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Startup Insight AI: Firm Analyzer & Management Assistant</title>
+    <title>Startup Insight AI: Overview Summarizer & Strategic Tools</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -302,7 +302,7 @@
 <body>
 
     <header>
-        <h1>Startup Insight AI</h1>
+        <h1>Startup Insight AI: Overview Summarizer</h1>
         <div class="status-indicator">
             <span id="statusDot" class="status-dot" title="Backend connectivity status"></span>
             Backend Status: <span id="statusText">Checking...</span>
@@ -312,7 +312,7 @@
     <div class="container">
         <div class="tab-navigation">
             <button class="tab-button active" data-tab="firm-analyzer">Firm Overview Analyzer</button>
-            <button class="tab-button" data-tab="management-assistant">Management Assistant</button>
+            <button class="tab-button" data-tab="startup-insight-hub">Startup Insight Hub</button>
             <button class="tab-button" data-tab="ai-insights">AI Insights & Web Search</button>
         </div>
 
@@ -338,10 +338,83 @@
             </div>
         </div>
 
-        <div id="management-assistant" class="tab-content">
-            <h2>Management Assistant Tools</h2>
+        <div id="startup-insight-hub" class="tab-content">
+            <h2>Startup Insight Hub: Idea & Strategy Tools</h2>
 
-            <h3>Idea & Brainstorming Generator</h3>
+            <h3>Startup Idea & Business Model Feedback</h3>
+            <form id="startupIdeaForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="startupIdeaDescription">Describe Your Startup Idea:</label>
+                    <textarea id="startupIdeaDescription" name="startupIdeaDescription" rows="5" placeholder="e.g., 'A mobile app connecting local farmers directly with consumers for fresh produce delivery, focusing on sustainability and fair pricing.'"></textarea>
+                    <p class="note">Provide a clear and concise description of your core offering, target market, and unique selling proposition.</p>
+                </div>
+                <div class="form-group">
+                    <label for="businessModelType">Primary Business Model:</label>
+                    <select id="businessModelType" name="businessModelType">
+                        <option value="SaaS">SaaS (Software as a Service)</option>
+                        <option value="eCommerce">eCommerce / Online Retail</option>
+                        <option value="dropshipping">Dropshipping</option>
+                        <option value="inPersonService">In-person Service (e.g., consulting, local services)</option>
+                        <option value="marketplace">Marketplace (connecting buyers/sellers)</option>
+                        <option value="subscriptionBox">Subscription Box</option>
+                        <option value="freemium">Freemium</option>
+                        <option value="adBased">Ad-based (e.g., free content supported by ads)</option>
+                        <option value="other">Other / Hybrid</option>
+                    </select>
+                    <p class="note">How do you primarily deliver value?</p>
+                </div>
+                <div class="form-group">
+                    <label for="revenueModel">Primary Revenue Model (How do you get paid?):</label>
+                    <select id="revenueModel" name="revenueModel">
+                        <option value="subscription">Subscription (recurring fees)</option>
+                        <option value="transactionFee">Transaction/Commission Fee</option>
+                        <option value="productSales">Direct Product Sales</option>
+                        <option value="serviceFee">Service Fee (per hour/project)</option>
+                        <option value="advertising">Advertising Revenue</option>
+                        <option value="licensing">Licensing / Royalties</option>
+                        <option value="dataSales">Data Sales</option>
+                        <option value="freemiumUpgrade">Freemium Upgrades</option>
+                        <option value="other">Other / Mixed</option>
+                    </select>
+                    <p class="note">What is your main source of income?</p>
+                </div>
+                <div class="form-group">
+                    <label for="targetAudience">Target Customer / Niche:</label>
+                    <input type="text" id="targetAudience" name="targetAudience" placeholder="e.g., 'Small independent coffee shops in urban areas'" />
+                    <p class="note">Who are your ideal customers?</p>
+                </div>
+                <div class="form-group">
+                    <label for="uniqueSellingProposition">Unique Value Proposition (Optional):</label>
+                    <textarea id="uniqueSellingProposition" name="uniqueSellingProposition" rows="2" placeholder="e.g., 'We offer the fastest delivery and personalized customer service that no one else can match.'"></textarea>
+                    <p class="note">What makes you different and better than alternatives?</p>
+                </div>
+                <div class="form-group">
+                    <label for="additionalIdeaInfo">Additional Information (Optional):</label>
+                    <textarea id="additionalIdeaInfo" name="additionalIdeaInfo" rows="3" placeholder="e.g., 'We plan to use AI for personalized recommendations.'"></textarea>
+                    <p class="note">Any other relevant details, challenges, or plans.</p>
+                </div>
+                <button type="submit" id="analyzeStartupIdeaBtn">
+                    Get Idea Feedback & Viability
+                </button>
+            </form>
+            <div class="response-box" id="startupIdeaResponse"></div>
+
+            <h3 style="margin-top: 2.5rem;">Competitive Landscape Analysis</h3>
+            <form id="competitiveAnalysisForm" autocomplete="off">
+                 <div class="form-group">
+                    <label for="competitiveIdeaDescription">Your Startup Idea (for competitive analysis):</label>
+                    <textarea id="competitiveIdeaDescription" name="competitiveIdeaDescription" rows="3" placeholder="e.g., 'A mobile app connecting local farmers directly with consumers for fresh produce delivery...'"></textarea>
+                    <p class="note">Describe your idea for competitive analysis. You can also click the button below to use the description from the 'Startup Idea & Business Model Feedback' section above.</p>
+                    <button type="button" id="useCurrentIdeaBtn" style="margin-top: 0.5rem; background-color: #6c757d;">Use Idea from Above</button>
+                </div>
+                <button type="submit" id="analyzeCompetitiveBtn">
+                    Analyze Competitive Landscape
+                </button>
+            </form>
+            <div class="response-box" id="competitiveAnalysisResponse"></div>
+
+
+            <h3 style="margin-top: 2.5rem;">Idea & Brainstorming Generator</h3>
             <form id="ideaGeneratorForm" autocomplete="off">
                 <div class="form-group">
                     <label for="ideaPrompt">Generate Ideas For:</label>
@@ -376,19 +449,6 @@
                 </button>
             </form>
             <div class="response-box" id="swotResponse"></div>
-
-            <h3 style="margin-top: 2.5rem;">Startup Idea Analyzer</h3>
-            <form id="ideaAnalyzerForm" autocomplete="off">
-                <div class="form-group">
-                    <label for="startupIdea">Describe Your Startup Idea:</label>
-                    <textarea id="startupIdea" name="startupIdea" rows="5" placeholder="e.g., 'A mobile app connecting local farmers directly with consumers for fresh produce delivery, focusing on sustainability and fair pricing.'"></textarea>
-                    <p class="note">Provide a clear and concise description of your startup idea. Include its core offering, target market, and unique selling proposition.</p>
-                </div>
-                <button type="submit" id="analyzeIdeaBtn">
-                    Analyze Idea
-                </button>
-            </form>
-            <div class="response-box" id="ideaAnalyzerResponse"></div>
 
             <h3 style="margin-top: 2.5rem;">Illustrative ROI Calculator</h3>
             <form id="roiCalculatorForm">
@@ -462,23 +522,39 @@
         const analyzeFirmBtn = document.getElementById('analyzeFirmBtn');
         const firmAnalysisResponse = document.getElementById('firmAnalysisResponse');
 
-        // Management Assistant
+        // Startup Insight Hub (formerly Management Assistant)
+        // Startup Idea & Business Model Feedback
+        const startupIdeaForm = document.getElementById('startupIdeaForm');
+        const startupIdeaDescriptionInput = document.getElementById('startupIdeaDescription');
+        const businessModelTypeSelect = document.getElementById('businessModelType');
+        const revenueModelSelect = document.getElementById('revenueModel');
+        const targetAudienceInput = document.getElementById('targetAudience');
+        const uniqueSellingPropositionInput = document.getElementById('uniqueSellingProposition');
+        const additionalIdeaInfoInput = document.getElementById('additionalIdeaInfo');
+        const analyzeStartupIdeaBtn = document.getElementById('analyzeStartupIdeaBtn');
+        const startupIdeaResponse = document.getElementById('startupIdeaResponse');
+
+        // Competitive Landscape Analysis
+        const competitiveAnalysisForm = document.getElementById('competitiveAnalysisForm');
+        const competitiveIdeaDescriptionInput = document.getElementById('competitiveIdeaDescription');
+        const useCurrentIdeaBtn = document.getElementById('useCurrentIdeaBtn');
+        const analyzeCompetitiveBtn = document.getElementById('analyzeCompetitiveBtn');
+        const competitiveAnalysisResponse = document.getElementById('competitiveAnalysisResponse');
+
+        // Idea & Brainstorming Generator
         const ideaGeneratorForm = document.getElementById('ideaGeneratorForm');
         const ideaPromptInput = document.getElementById('ideaPrompt');
         const generateIdeaBtn = document.getElementById('generateIdeaBtn');
         const ideaGeneratorResponse = document.getElementById('ideaGeneratorResponse');
 
+        // SWOT Assistant
         const swotAssistantForm = document.getElementById('swotAssistantForm');
         const swotCompanyInput = document.getElementById('swotCompany');
         const swotTypeSelect = document.getElementById('swotType');
         const generateSwotBtn = document.getElementById('generateSwotBtn');
         const swotResponse = document.getElementById('swotResponse');
 
-        const ideaAnalyzerForm = document.getElementById('ideaAnalyzerForm');
-        const startupIdeaInput = document.getElementById('startupIdea');
-        const analyzeIdeaBtn = document.getElementById('analyzeIdeaBtn');
-        const ideaAnalyzerResponse = document.getElementById('ideaAnalyzerResponse');
-
+        // ROI Calculator
         const roiCalculatorForm = document.getElementById('roiCalculatorForm');
         const initialInvestmentInput = document.getElementById('initialInvestment');
         const startupSizeSelect = document.getElementById('startupSize');
@@ -541,7 +617,8 @@
                 if (button === analyzeFirmBtn) button.textContent = 'Analyze Firm';
                 else if (button === generateIdeaBtn) button.textContent = 'Generate Idea';
                 else if (button === generateSwotBtn) button.textContent = 'Generate SWOT Points';
-                else if (button === analyzeIdeaBtn) button.textContent = 'Analyze Idea'; // New button
+                else if (button === analyzeStartupIdeaBtn) button.textContent = 'Get Idea Feedback & Viability'; // Updated text
+                else if (button === analyzeCompetitiveBtn) button.textContent = 'Analyze Competitive Landscape'; // New button
                 else if (button === checkStatusBtn) button.textContent = 'Check Backend Status';
                 else if (button === aiFactBtn) button.textContent = 'Get a Random AI Fact';
                 else if (button === calculateRoiBtn) button.textContent = 'Calculate Illustrative ROI';
@@ -619,7 +696,8 @@
         setupClickToSearch(firmAnalysisResponse);
         setupClickToSearch(generalStatusResponse);
         setupClickToSearch(aiFactResponse);
-
+        setupClickToSearch(startupIdeaResponse); // New
+        setupClickToSearch(competitiveAnalysisResponse); // New
 
         // --- Event Listeners ---
 
@@ -682,7 +760,79 @@
             }
         });
 
-        // Idea Generator Form
+        // Startup Idea & Business Model Feedback Form (NEW/ENHANCED)
+        startupIdeaForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoadingState(analyzeStartupIdeaBtn, startupIdeaResponse, true);
+
+            const ideaDescription = startupIdeaDescriptionInput.value.trim();
+            const businessModel = businessModelTypeSelect.value;
+            const revenueModel = revenueModelSelect.value;
+            const targetAudience = targetAudienceInput.value.trim();
+            const uniqueSellingProposition = uniqueSellingPropositionInput.value.trim();
+            const additionalInfo = additionalIdeaInfoInput.value.trim();
+
+            if (!ideaDescription) {
+                startupIdeaResponse.textContent = 'Please describe your startup idea.';
+                setLoadingState(analyzeStartupIdeaBtn, startupIdeaResponse, false);
+                return;
+            }
+
+            let prompt = `Analyze the following startup idea and provide comprehensive feedback focusing on its viability, potential profit/loss factors, and key challenges. Structure your response clearly, addressing each input:\n\n`;
+            prompt += `Startup Idea: "${ideaDescription}"\n`;
+            prompt += `Primary Business Model: ${businessModel}\n`;
+            prompt += `Primary Revenue Model (How you get paid): ${revenueModel}\n`;
+            prompt += `Target Customer/Niche: ${targetAudience || 'Not specified'}\n`;
+            if (uniqueSellingProposition) {
+                prompt += `Unique Value Proposition: "${uniqueSellingProposition}"\n`;
+            }
+            if (additionalInfo) {
+                prompt += `Additional Information: "${additionalInfo}"\n`;
+            }
+            prompt += `\nProvide an overview feedback on: \n1. Initial Viability/Market Fit \n2. Potential for Profit/Loss (qualitative assessment based on model/revenue) \n3. Key Strengths \n4. Potential Weaknesses/Challenges. Be realistic and concise.`;
+
+            try {
+                const data = await fetchAPI('/generate', 'POST', { prompt: prompt });
+                if (data.error) throw new Error(data.error);
+                startupIdeaResponse.textContent = data.output || 'Could not analyze the startup idea.';
+            } catch (e) {
+                startupIdeaResponse.textContent = `Startup idea analysis failed: ${e.message}.`;
+            } finally {
+                setLoadingState(analyzeStartupIdeaBtn, startupIdeaResponse, false);
+            }
+        });
+
+        // Competitive Landscape Analysis Form (NEW)
+        useCurrentIdeaBtn.addEventListener('click', () => {
+            competitiveIdeaDescriptionInput.value = startupIdeaDescriptionInput.value.trim();
+        });
+
+        competitiveAnalysisForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoadingState(analyzeCompetitiveBtn, competitiveAnalysisResponse, true);
+
+            const ideaForCompetitors = competitiveIdeaDescriptionInput.value.trim();
+
+            if (!ideaForCompetitors) {
+                competitiveAnalysisResponse.textContent = 'Please provide your startup idea for competitive analysis.';
+                setLoadingState(analyzeCompetitiveBtn, competitiveAnalysisResponse, false);
+                return;
+            }
+
+            const prompt = `Based on the startup idea: "${ideaForCompetitors}", perform the following:\n1. Identify 2-3 significant potential competitors or similar market players. For each, provide a very brief overview of what they do.\n2. Suggest 2-3 actionable strategies for how this new startup can effectively differentiate itself and engage in the market despite existing competition. Focus on unique selling points, niche targeting, or innovative approaches.`;
+
+            try {
+                const data = await fetchAPI('/generate', 'POST', { prompt: prompt });
+                if (data.error) throw new Error(data.error);
+                competitiveAnalysisResponse.textContent = data.output || 'Could not perform competitive analysis.';
+            } catch (e) {
+                competitiveAnalysisResponse.textContent = `Competitive analysis failed: ${e.message}.`;
+            } finally {
+                setLoadingState(analyzeCompetitiveBtn, competitiveAnalysisResponse, false);
+            }
+        });
+
+        // Idea Generator Form (Existing)
         ideaGeneratorForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             setLoadingState(generateIdeaBtn, ideaGeneratorResponse, true);
@@ -707,7 +857,7 @@
             }
         });
 
-        // SWOT Assistant Form
+        // SWOT Assistant Form (Existing)
         swotAssistantForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             setLoadingState(generateSwotBtn, swotResponse, true);
@@ -753,33 +903,7 @@
             }
         });
 
-        // Startup Idea Analyzer Form (NEW)
-        ideaAnalyzerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            setLoadingState(analyzeIdeaBtn, ideaAnalyzerResponse, true);
-
-            const startupIdea = startupIdeaInput.value.trim();
-            if (!startupIdea) {
-                ideaAnalyzerResponse.textContent = 'Please describe your startup idea.';
-                setLoadingState(analyzeIdeaBtn, ideaAnalyzerResponse, false);
-                return;
-            }
-
-            const prompt = `Analyze the following startup idea and provide a brief overview feedback, including potential viability or challenges related to profit/loss and market fit:\n\nIdea: "${startupIdea}"\n\nFeedback:`;
-
-            try {
-                const data = await fetchAPI('/generate', 'POST', { prompt: prompt });
-                if (data.error) throw new Error(data.error);
-                ideaAnalyzerResponse.textContent = data.output || 'Could not analyze the idea.';
-            } catch (e) {
-                ideaAnalyzerResponse.textContent = `Idea analysis failed: ${e.message}.`;
-            } finally {
-                setLoadingState(analyzeIdeaBtn, ideaAnalyzerResponse, false);
-            }
-        });
-
-
-        // ROI Calculator Form
+        // ROI Calculator Form (Existing)
         roiCalculatorForm.addEventListener('submit', (e) => {
             e.preventDefault();
             setLoadingState(calculateRoiBtn, roiResponse, true);
@@ -819,7 +943,7 @@
         });
 
 
-        // AI Fact Button
+        // AI Fact Button (Existing)
         aiFactBtn.addEventListener('click', async () => {
             setLoadingState(aiFactBtn, aiFactResponse, true);
             try {
