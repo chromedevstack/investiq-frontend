@@ -1,282 +1,839 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>StartupInsight AI Test</title>
-<style>
-    body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        max-width: 720px;
-        margin: 2rem auto;
-        padding: 1.5rem 2rem;
-        background: #f9f9f9;
-        color: #222;
-        box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
-        border-radius: 10px;
-    }
-    header {
-        background: #2c3e50;
-        color: white;
-        padding: 15px 25px;
-        border-radius: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-weight: 600;
-        font-size: 1.4rem;
-    }
-    #status {
-        font-weight: 700;
-        padding: 3px 10px;
-        border-radius: 5px;
-        background: gray;
-        color: white;
-        min-width: 90px;
-        text-align: center;
-        user-select: none;
-    }
-    section {
-        margin-top: 2.5rem;
-    }
-    h2 {
-        margin-bottom: 0.8rem;
-        color: #34495e;
-    }
-    button {
-        padding: 12px 26px;
-        font-size: 16px;
-        background-color: #3498db;
-        border: none;
-        color: white;
-        border-radius: 7px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        user-select: none;
-    }
-    button:disabled {
-        background-color: #95a5a6;
-        cursor: not-allowed;
-    }
-    button:hover:not(:disabled) {
-        background-color: #2980b9;
-    }
-    #response {
-        margin-top: 20px;
-        min-height: 100px;
-        background: white;
-        padding: 18px 22px;
-        border-radius: 8px;
-        box-shadow: 0 1px 6px rgb(0 0 0 / 0.1);
-        white-space: pre-wrap;
-        font-family: Consolas, monospace;
-        font-size: 15px;
-        color: #2c3e50;
-    }
-    form > div {
-        margin-top: 15px;
-    }
-    label {
-        font-weight: 600;
-        display: block;
-        margin-bottom: 6px;
-        color: #2c3e50;
-    }
-    input[type="text"], textarea {
-        width: 100%;
-        padding: 10px 12px;
-        font-size: 15px;
-        border: 1.8px solid #bdc3c7;
-        border-radius: 6px;
-        transition: border-color 0.3s ease;
-    }
-    input[type="text"]:focus, textarea:focus {
-        border-color: #3498db;
-        outline: none;
-    }
-    /* Loader spinner */
-    .loader {
-        display: inline-block;
-        border: 3px solid #f3f3f3;
-        border-top: 3px solid #3498db;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        animation: spin 1s linear infinite;
-        vertical-align: middle;
-        margin-left: 10px;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Startup Insight AI: Firm Analyzer & Management Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4A90E2; /* Blue */
+            --secondary-color: #50E3C2; /* Teal */
+            --dark-bg: #2C3E50; /* Dark Blue Gray */
+            --light-bg: #F8F9FA; /* Light Gray */
+            --text-color: #333;
+            --light-text-color: #666;
+            --border-color: #E0E0E0;
+            --success-color: #28A745;
+            --danger-color: #DC3545;
+            --warning-color: #FFC107;
+            --card-bg: #FFFFFF;
+            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-strong: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-strong);
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            gap: 10px; /* Spacing between elements */
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            background-color: gray; /* Default */
+            transition: background-color 0.3s ease;
+        }
+        .status-dot.online { background-color: var(--success-color); }
+        .status-dot.offline { background-color: var(--danger-color); }
+        .status-dot.checking { background-color: var(--warning-color); }
+
+        .container {
+            flex-grow: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 1.5rem auto;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .tab-navigation {
+            display: flex;
+            justify-content: center;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+            padding: 0.5rem;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+        .tab-button {
+            flex: 1;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background-color: transparent;
+            color: var(--light-text-color);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+        .tab-button:hover {
+            color: var(--primary-color);
+        }
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+            display: none; /* Hidden by default */
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        h2 {
+            color: var(--dark-bg);
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            color: var(--dark-bg);
+            font-size: 1.2rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: calc(100% - 24px); /* Account for padding */
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+            outline: none;
+            background-color: white;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        button:hover:not(:disabled) {
+            background-color: #3a7bd5; /* Darker primary */
+            transform: translateY(-1px);
+        }
+        button:disabled {
+            background-color: #B0C4DE; /* Lighter gray blue */
+            cursor: not-allowed;
+        }
+
+        .loader {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .response-box {
+            margin-top: 1.5rem;
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+            white-space: pre-wrap;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.95rem;
+            color: var(--dark-bg);
+            min-height: 120px;
+            border: 1px dashed var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: text; /* Indicate it's selectable */
+        }
+        .response-box:empty:before {
+            content: 'AI insights will appear here...';
+            color: var(--light-text-color);
+        }
+
+        .note {
+            font-size: 0.85rem;
+            color: var(--light-text-color);
+            margin-top: 0.5rem;
+        }
+        .disclaimer {
+            font-size: 0.8rem;
+            color: var(--danger-color);
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border: 1px solid var(--danger-color);
+            border-radius: 5px;
+            background-color: rgba(220, 53, 69, 0.05);
+        }
+
+        footer {
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--light-text-color);
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 1rem;
+                text-align: center;
+            }
+            header h1 {
+                margin-bottom: 0.5rem;
+            }
+            .tab-navigation {
+                flex-wrap: wrap;
+                padding: 0.2rem;
+            }
+            .tab-button {
+                flex: none;
+                width: 100%;
+                border-bottom: none;
+                border-top: 1px solid var(--border-color);
+                border-radius: 0;
+            }
+            .tab-button:first-child {
+                border-top: none;
+            }
+            .tab-button.active {
+                border-bottom: none;
+                border-left: 3px solid var(--primary-color);
+            }
+            .container {
+                padding: 0 1rem;
+            }
+            .tab-content {
+                padding: 1.5rem 1rem;
+            }
+            input[type="text"],
+            input[type="number"],
+            textarea,
+            select {
+                width: calc(100% - 20px); /* Adjust padding for smaller screens */
+            }
+        }
+    </style>
 </head>
 <body>
 
-<header>
-    <div>StartupInsight AI Test</div>
-    <div>Backend Status: <span id="status" title="Backend connectivity status">Checking...</span></div>
-</header>
-
-<section>
-    <button id="checkStatusBtn" aria-label="Check backend status">Check Backend Status</button>
-</section>
-
-<section>
-    <h2>Get AI Fact</h2>
-    <button id="aiFactBtn" aria-label="Generate AI Fact">Generate AI Fact</button>
-</section>
-
-<section>
-    <h2>Ask a Question from URL</h2>
-    <form id="askForm" autocomplete="off">
-        <div>
-            <label for="question">Question:</label>
-            <input type="text" id="question" name="question" placeholder="Type your question here" required />
+    <header>
+        <h1>Startup Insight AI</h1>
+        <div class="status-indicator">
+            <span id="statusDot" class="status-dot" title="Backend connectivity status"></span>
+            Backend Status: <span id="statusText">Checking...</span>
         </div>
-        <div>
-            <label for="url">URL to scrape:</label>
-            <input type="text" id="url" name="url" placeholder="https://example.com" required />
+    </header>
+
+    <div class="container">
+        <div class="tab-navigation">
+            <button class="tab-button active" data-tab="firm-analyzer">Firm Overview Analyzer</button>
+            <button class="tab-button" data-tab="management-assistant">Management Assistant</button>
+            <button class="tab-button" data-tab="ai-insights">AI Insights & Web Search</button>
         </div>
-        <button type="submit" aria-label="Submit question and URL">Ask</button>
-    </form>
-</section>
 
-<section>
-    <h2>Response</h2>
-    <div id="response" aria-live="polite" aria-atomic="true">AI response will appear here...</div>
-</section>
+        <div id="firm-analyzer" class="tab-content active">
+            <h2>Analyze a Firm Overview</h2>
+            <form id="firmAnalysisForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="firmUrl">Firm Website URL:</label>
+                    <input type="text" id="firmUrl" name="firmUrl" placeholder="e.g., https://www.acme-startup.com" required />
+                    <p class="note">Provide the main website URL of the startup or firm you want to analyze.</p>
+                </div>
+                <div class="form-group">
+                    <label for="analysisFocus">Focus of Analysis (Optional):</label>
+                    <textarea id="analysisFocus" name="analysisFocus" rows="3" placeholder="e.g., 'Summarize their business model and target market.' or 'Identify their core strengths and potential opportunities.'"></textarea>
+                    <p class="note">Specify what you want the AI to focus on. If left blank, it will provide a general overview.</p>
+                </div>
+                <button type="submit" id="analyzeFirmBtn">
+                    Analyze Firm
+                </button>
+            </form>
+            <div class="response-box clickable-response" id="firmAnalysisResponse">
+                <p class="note">Click on any word in the response to search the web for it.</p>
+            </div>
+        </div>
 
-<script>
-    const backendBaseURL = 'https://startupinsight-backend.onrender.com';
+        <div id="management-assistant" class="tab-content">
+            <h2>Management Assistant Tools</h2>
 
-    const statusEl = document.getElementById('status');
-    const responseEl = document.getElementById('response');
-    const aiFactBtn = document.getElementById('aiFactBtn');
-    const checkStatusBtn = document.getElementById('checkStatusBtn');
-    const askForm = document.getElementById('askForm');
+            <h3>Idea & Brainstorming Generator</h3>
+            <form id="ideaGeneratorForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="ideaPrompt">Generate Ideas For:</label>
+                    <textarea id="ideaPrompt" name="ideaPrompt" rows="3" placeholder="e.g., 'innovative marketing slogans for a sustainable tech product', 'strategic partnership opportunities for a fintech startup', '3 unique business ideas in the remote work sector'"></textarea>
+                    <p class="note">Describe what kind of ideas or text you need. Be specific!</p>
+                </div>
+                <button type="submit" id="generateIdeaBtn">
+                    Generate Idea
+                </button>
+            </form>
+            <div class="response-box" id="ideaGeneratorResponse"></div>
 
-    // Update backend status UI
-    function updateStatus(online, qaStatus = '', genStatus = '') {
-        if (online) {
-            statusEl.textContent = 'Online';
-            statusEl.style.backgroundColor = '#27ae60';
-            statusEl.style.color = '#fff';
-            if (qaStatus || genStatus) {
-                statusEl.title = `Backend online. QA Model: ${qaStatus}, Gen Model: ${genStatus}`;
-            }
-        } else {
-            statusEl.textContent = 'Offline';
-            statusEl.style.backgroundColor = '#c0392b';
-            statusEl.style.color = '#fff';
-            if (qaStatus || genStatus) {
-                statusEl.title = `Backend offline. QA Model: ${qaStatus}, Gen Model: ${genStatus}`;
+            <h3 style="margin-top: 2.5rem;">SWOT Analysis Assistant (Beta)</h3>
+            <form id="swotAssistantForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="swotCompany">Company/Project Name (for SWOT):</label>
+                    <input type="text" id="swotCompany" name="swotCompany" placeholder="e.g., 'My New SaaS Platform'" />
+                    <p class="note">Provide a brief context for the SWOT analysis.</p>
+                </div>
+                 <div class="form-group">
+                    <label for="swotType">Generate:</label>
+                    <select id="swotType" name="swotType">
+                        <option value="strengths">Strengths</option>
+                        <option value="weaknesses">Weaknesses</option>
+                        <option value="opportunities">Opportunities</option>
+                        <option value="threats">Threats</option>
+                        <option value="full_swot">Full SWOT (Brief)</option>
+                    </select>
+                </div>
+                <button type="submit" id="generateSwotBtn">
+                    Generate SWOT Points
+                </button>
+            </form>
+            <div class="response-box" id="swotResponse"></div>
+
+            <h3 style="margin-top: 2.5rem;">Startup Idea Analyzer</h3>
+            <form id="ideaAnalyzerForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="startupIdea">Describe Your Startup Idea:</label>
+                    <textarea id="startupIdea" name="startupIdea" rows="5" placeholder="e.g., 'A mobile app connecting local farmers directly with consumers for fresh produce delivery, focusing on sustainability and fair pricing.'"></textarea>
+                    <p class="note">Provide a clear and concise description of your startup idea. Include its core offering, target market, and unique selling proposition.</p>
+                </div>
+                <button type="submit" id="analyzeIdeaBtn">
+                    Analyze Idea
+                </button>
+            </form>
+            <div class="response-box" id="ideaAnalyzerResponse"></div>
+
+            <h3 style="margin-top: 2.5rem;">Illustrative ROI Calculator</h3>
+            <form id="roiCalculatorForm">
+                <div class="form-group">
+                    <label for="initialInvestment">Initial Investment ($):</label>
+                    <input type="number" id="initialInvestment" min="1" value="100000" required>
+                </div>
+                <div class="form-group">
+                    <label for="startupSize">Startup Size:</label>
+                    <select id="startupSize">
+                        <option value="small">Small (e.g., bootstrapped, lean)</option>
+                        <option value="medium">Medium (e.g., seed-funded, growing team)</option>
+                        <option value="large">Large (e.g., Series A+, established)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="timePeriod">Time Period:</label>
+                    <select id="timePeriod">
+                        <option value="3">3 Months</option>
+                        <option value="6">6 Months</option>
+                        <option value="12">12 Months</option>
+                        <option value="24">24 Months</option>
+                    </select>
+                </div>
+                <button type="submit" id="calculateRoiBtn">Calculate Illustrative ROI</button>
+            </form>
+            <div class="response-box" id="roiResponse"></div>
+            <p class="disclaimer">
+                <strong>Disclaimer:</strong> This ROI calculator provides *illustrative* projections based on simplified assumptions and is not powered by AI. It is not financial advice. Actual results will vary significantly.
+            </p>
+        </div>
+
+        <div id="ai-insights" class="tab-content">
+            <h2>AI Insights & System Status</h2>
+            <p>This section provides general AI insights and allows you to manually check the backend service status.</p>
+            <button id="checkStatusBtn">
+                Check Backend Status
+            </button>
+            <div class="response-box clickable-response" id="generalStatusResponse" style="margin-top: 1rem;">
+                 <p class="note">Click on any word in the response to search the web for it.</p>
+            </div>
+
+            <h3 style="margin-top: 2.5rem;">Random AI Fact</h3>
+            <button id="aiFactBtn">
+                Get a Random AI Fact
+            </button>
+            <div class="response-box clickable-response" id="aiFactResponse" style="margin-top: 1rem;">
+                <p class="note">Click on any word in the response to search the web for it.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Startup Insight AI. All rights reserved. <br> Powered by small language models for rapid insights on free-tier infrastructure.</p>
+    </footer>
+
+    <script>
+        // ** IMPORTANT: Replace with your actual Render backend URL **
+        const backendBaseURL = 'https://startupinsight-backend.onrender.com';
+
+        // UI Elements
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // Firm Analyzer
+        const firmAnalysisForm = document.getElementById('firmAnalysisForm');
+        const firmUrlInput = document.getElementById('firmUrl');
+        const analysisFocusInput = document.getElementById('analysisFocus');
+        const analyzeFirmBtn = document.getElementById('analyzeFirmBtn');
+        const firmAnalysisResponse = document.getElementById('firmAnalysisResponse');
+
+        // Management Assistant
+        const ideaGeneratorForm = document.getElementById('ideaGeneratorForm');
+        const ideaPromptInput = document.getElementById('ideaPrompt');
+        const generateIdeaBtn = document.getElementById('generateIdeaBtn');
+        const ideaGeneratorResponse = document.getElementById('ideaGeneratorResponse');
+
+        const swotAssistantForm = document.getElementById('swotAssistantForm');
+        const swotCompanyInput = document.getElementById('swotCompany');
+        const swotTypeSelect = document.getElementById('swotType');
+        const generateSwotBtn = document.getElementById('generateSwotBtn');
+        const swotResponse = document.getElementById('swotResponse');
+
+        const ideaAnalyzerForm = document.getElementById('ideaAnalyzerForm');
+        const startupIdeaInput = document.getElementById('startupIdea');
+        const analyzeIdeaBtn = document.getElementById('analyzeIdeaBtn');
+        const ideaAnalyzerResponse = document.getElementById('ideaAnalyzerResponse');
+
+        const roiCalculatorForm = document.getElementById('roiCalculatorForm');
+        const initialInvestmentInput = document.getElementById('initialInvestment');
+        const startupSizeSelect = document.getElementById('startupSize');
+        const timePeriodSelect = document.getElementById('timePeriod');
+        const calculateRoiBtn = document.getElementById('calculateRoiBtn');
+        const roiResponse = document.getElementById('roiResponse');
+
+        // AI Insights & Web Search
+        const checkStatusBtn = document.getElementById('checkStatusBtn');
+        const generalStatusResponse = document.getElementById('generalStatusResponse');
+        const aiFactBtn = document.getElementById('aiFactBtn');
+        const aiFactResponse = document.getElementById('aiFactResponse');
+
+        // --- Utility Functions ---
+        function updateBackendStatusUI(status, qaStatus = '', genStatus = '') {
+            statusText.textContent = status;
+            statusDot.classList.remove('online', 'offline', 'checking');
+            if (status === 'Online') {
+                statusDot.classList.add('online');
+                statusDot.title = `Backend online. QA Model: ${qaStatus}, Gen Model: ${genStatus}.`;
+            } else if (status === 'Offline') {
+                statusDot.classList.add('offline');
+                statusDot.title = `Backend offline. QA Model: ${qaStatus}, Gen Model: ${genStatus}.`;
+            } else { // e.g., 'Checking...' or 'Degraded'
+                statusDot.classList.add('checking');
+                statusDot.title = `Backend status: ${status}. QA Model: ${qaStatus}, Gen Model: ${genStatus}.`;
             }
         }
-    }
 
-    // Check backend status endpoint (/status)
-    async function checkBackendStatus() {
-        updateStatus(false);
-        responseEl.textContent = 'Checking backend status...';
-        try {
-            const res = await fetch(backendBaseURL + '/status');
-            if (!res.ok) throw new Error(`Status response not OK: ${res.status} ${res.statusText}`);
-            const data = await res.json();
-            if (data.status === 'online') {
-                updateStatus(true, data.qa_model_status, data.gen_model_status);
-                responseEl.textContent = `Backend is online and ready. QA Model: ${data.qa_model_status}, Gen Model: ${data.gen_model_status}.`;
+        async function fetchAPI(endpoint, method = 'GET', body = null) {
+            const options = {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+            };
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+
+            try {
+                const res = await fetch(backendBaseURL + endpoint, options);
+                if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP error! Status: ${res.status}`);
+                }
+                return await res.json();
+            } catch (e) {
+                console.error(`Fetch error for ${endpoint}:`, e);
+                throw new Error(`API Request Failed: ${e.message}`);
+            }
+        }
+
+        function setLoadingState(button, responseBox, isLoading) {
+            if (isLoading) {
+                button.disabled = true;
+                button.innerHTML = `Processing <span class="loader"></span>`;
+                responseBox.innerHTML = '<p class="note">AI is thinking...</p>';
             } else {
-                updateStatus(false, data.qa_model_status, data.gen_model_status);
-                responseEl.textContent = `Backend responded but status is ${data.status}. QA Model: ${data.qa_model_status}, Gen Model: ${data.gen_model_status}.`;
+                button.disabled = false;
+                // Restore original button text based on its ID
+                if (button === analyzeFirmBtn) button.textContent = 'Analyze Firm';
+                else if (button === generateIdeaBtn) button.textContent = 'Generate Idea';
+                else if (button === generateSwotBtn) button.textContent = 'Generate SWOT Points';
+                else if (button === analyzeIdeaBtn) button.textContent = 'Analyze Idea'; // New button
+                else if (button === checkStatusBtn) button.textContent = 'Check Backend Status';
+                else if (button === aiFactBtn) button.textContent = 'Get a Random AI Fact';
+                else if (button === calculateRoiBtn) button.textContent = 'Calculate Illustrative ROI';
             }
-        } catch (e) {
-            updateStatus(false);
-            responseEl.textContent = 'Error connecting to backend: ' + e.message;
         }
-    }
 
-    checkStatusBtn.addEventListener('click', checkBackendStatus);
-
-    // Utility: show loading spinner inside button
-    function setLoading(button, loading = true) {
-        if (loading) {
-            button.disabled = true;
-            button.innerHTML = `Processing<span class="loader"></span>`;
-        } else {
-            button.disabled = false;
-            if (button.id === 'aiFactBtn') button.textContent = 'Generate AI Fact';
-            if (button.id === 'checkStatusBtn') button.textContent = 'Check Backend Status';
-            if (button.type === 'submit') button.textContent = 'Ask'; // For the Ask form button
-        }
-    }
-
-    // Handle AI Fact button
-    aiFactBtn.addEventListener('click', async () => {
-        responseEl.textContent = '';
-        setLoading(aiFactBtn, true);
-        try {
-            const res = await fetch(backendBaseURL + '/generate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: 'Tell me a random AI fact.' }),
+        // --- Tab Logic ---
+        function activateTab(tabId) {
+            tabContents.forEach(content => {
+                content.classList.remove('active');
             });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => null);
-                throw new Error(errData?.error || `Response not OK: ${res.status} ${res.statusText}`);
-            }
-            const data = await res.json();
-            if (data.error) throw new Error(data.error);
-            responseEl.textContent = data.output || 'No output returned.';
-        } catch (e) {
-            responseEl.textContent = 'Error: ' + e.message;
-        } finally {
-            setLoading(aiFactBtn, false);
-        }
-    });
-
-    // Handle Ask form submit
-    askForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        responseEl.textContent = '';
-        const submitButton = askForm.querySelector('button[type="submit"]');
-        setLoading(submitButton, true);
-
-        const question = askForm.question.value.trim();
-        const url = askForm.url.value.trim();
-
-        if (!question || !url) {
-            responseEl.textContent = 'Please fill both question and URL fields.';
-            setLoading(submitButton, false);
-            return;
-        }
-
-        try {
-            const res = await fetch(backendBaseURL + '/ask', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question, url }),
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
             });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => null);
-                throw new Error(errData?.error || `Response not OK: ${res.status} ${res.statusText}`);
-            }
-            const data = await res.json();
-            if (data.error) throw new Error(data.error);
 
-            responseEl.textContent = 
-                `Q: ${data.question}\nA: ${data.answer}\nConfidence: ${(data.score * 100).toFixed(2)}%`;
-        } catch (e) {
-            responseEl.textContent = 'Error: ' + e.message;
-        } finally {
-            setLoading(submitButton, false);
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab-button[data-tab="${tabId}"]`).classList.add('active');
         }
-    });
 
-    // Auto check backend on page load
-    checkBackendStatus();
-</script>
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.dataset.tab;
+                activateTab(tabId);
+            });
+        });
+
+        // --- Click-to-Search Feature ---
+        function setupClickToSearch(responseBoxElement) {
+            responseBoxElement.addEventListener('click', (event) => {
+                let selectedText = window.getSelection().toString().trim();
+                if (selectedText) {
+                    // If text is selected, use it
+                    performWebSearch(selectedText);
+                } else {
+                    // If no text is selected, try to get the word under the cursor
+                    const target = event.target;
+                    if (target && target.nodeType === Node.TEXT_NODE) {
+                        const range = document.caretRangeFromPoint(event.clientX, event.clientY);
+                        if (range) {
+                            const start = range.startOffset;
+                            const textNode = range.startContainer;
+                            const fullText = textNode.textContent;
+
+                            // Find word boundaries
+                            let wordStart = start;
+                            while (wordStart > 0 && /\w/.test(fullText[wordStart - 1])) {
+                                wordStart--;
+                            }
+                            let wordEnd = start;
+                            while (wordEnd < fullText.length && /\w/.test(fullText[wordEnd])) {
+                                wordEnd++;
+                            }
+                            const word = fullText.substring(wordStart, wordEnd).trim();
+                            if (word) {
+                                performWebSearch(word);
+                            }
+                        }
+                    } else if (target.textContent && target.textContent.trim()) {
+                        // Fallback for clicks on non-text nodes within the box
+                        // This might search the entire content, or just the clicked element's text
+                        performWebSearch(target.textContent.trim().split(/\s+/)[0]); // Just take the first word
+                    }
+                }
+            });
+        }
+
+        function performWebSearch(query) {
+            if (query) {
+                const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                window.open(searchUrl, '_blank');
+            }
+        }
+
+        // Apply click-to-search to relevant response boxes
+        setupClickToSearch(firmAnalysisResponse);
+        setupClickToSearch(generalStatusResponse);
+        setupClickToSearch(aiFactResponse);
+
+
+        // --- Event Listeners ---
+
+        // Initial backend status check on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            checkBackendStatus();
+            activateTab('firm-analyzer'); // Default tab on load
+        });
+
+        // Backend Status Check
+        checkStatusBtn.addEventListener('click', checkBackendStatus);
+        async function checkBackendStatus() {
+            updateBackendStatusUI('Checking...');
+            generalStatusResponse.innerHTML = '<p class="note">Checking backend status...</p>';
+            try {
+                const data = await fetchAPI('/status');
+                if (data.status === 'online') {
+                    updateBackendStatusUI('Online', data.qa_model_status, data.gen_model_status);
+                    generalStatusResponse.textContent = `Backend is online and ready.\nQA Model: ${data.qa_model_status}\nGeneration Model: ${data.gen_model_status}.`;
+                } else {
+                    updateBackendStatusUI('Degraded', data.qa_model_status, data.gen_model_status);
+                    generalStatusResponse.textContent = `Backend responded but status is '${data.status}'.\nQA Model: ${data.qa_model_status}\nGeneration Model: ${data.gen_model_status}.`;
+                }
+            } catch (e) {
+                updateBackendStatusUI('Offline', 'failed', 'failed');
+                generalStatusResponse.textContent = `Error connecting to backend: ${e.message}. Please ensure the backend is running and accessible.`;
+            }
+        }
+
+        // Firm Analysis Form
+        firmAnalysisForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoadingState(analyzeFirmBtn, firmAnalysisResponse, true);
+
+            const firmUrl = firmUrlInput.value.trim();
+            const analysisFocus = analysisFocusInput.value.trim();
+
+            if (!firmUrl) {
+                firmAnalysisResponse.textContent = 'Please provide a Firm Website URL.';
+                setLoadingState(analyzeFirmBtn, firmAnalysisResponse, false);
+                return;
+            }
+
+            let question = "Provide a concise overview of this company, its core business, and key offerings.";
+            if (analysisFocus) {
+                question = `${analysisFocus} based on the content of this page.`;
+            } else {
+                 question += " Also, briefly mention any key figures or funding if clearly stated. Keep the summary focused and professional.";
+            }
+
+            try {
+                const data = await fetchAPI('/ask', 'POST', { question: question, url: firmUrl });
+                if (data.error) throw new Error(data.error);
+
+                firmAnalysisResponse.textContent = `Analysis of ${firmUrl}:\n\n${data.answer || 'No specific analysis found.'}\n\n(Confidence: ${(data.score * 100).toFixed(2)}%)`;
+            } catch (e) {
+                firmAnalysisResponse.textContent = `Analysis failed: ${e.message}. Ensure the URL is correct and accessible. The AI may not find relevant information if the content is sparse or protected.`;
+            } finally {
+                setLoadingState(analyzeFirmBtn, firmAnalysisResponse, false);
+            }
+        });
+
+        // Idea Generator Form
+        ideaGeneratorForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoadingState(generateIdeaBtn, ideaGeneratorResponse, true);
+
+            const ideaPrompt = ideaPromptInput.value.trim();
+            if (!ideaPrompt) {
+                ideaGeneratorResponse.textContent = 'Please provide a prompt for idea generation.';
+                setLoadingState(generateIdeaBtn, ideaGeneratorResponse, false);
+                return;
+            }
+
+            const prompt = `Generate: ${ideaPrompt}. Keep the output concise and actionable.`;
+
+            try {
+                const data = await fetchAPI('/generate', 'POST', { prompt: prompt });
+                if (data.error) throw new Error(data.error);
+                ideaGeneratorResponse.textContent = data.output || 'No output generated.';
+            } catch (e) {
+                ideaGeneratorResponse.textContent = `Idea generation failed: ${e.message}.`;
+            } finally {
+                setLoadingState(generateIdeaBtn, ideaGeneratorResponse, false);
+            }
+        });
+
+        // SWOT Assistant Form
+        swotAssistantForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoadingState(generateSwotBtn, swotResponse, true);
+
+            const companyName = swotCompanyInput.value.trim();
+            const swotType = swotTypeSelect.value;
+
+            if (!companyName && swotType !== 'full_swot') {
+                swotResponse.textContent = 'Please provide a Company/Project Name for the SWOT analysis, or select "Full SWOT (Brief)" for a generic analysis.';
+                setLoadingState(generateSwotBtn, swotResponse, false);
+                return;
+            }
+
+            let prompt = "";
+            let target = companyName ? `for a company/project like "${companyName}"` : "for a generic startup";
+
+            switch (swotType) {
+                case 'strengths':
+                    prompt = `List 3-5 potential strengths ${target}.`;
+                    break;
+                case 'weaknesses':
+                    prompt = `List 3-5 potential weaknesses ${target}.`;
+                    break;
+                case 'opportunities':
+                    prompt = `List 3-5 potential opportunities ${target}.`;
+                    break;
+                case 'threats':
+                    prompt = `List 3-5 potential threats ${target}.`;
+                    break;
+                case 'full_swot':
+                    prompt = `Provide a very brief SWOT analysis (Strengths, Weaknesses, Opportunities, Threats) ${target}. Keep each section concise, 2-3 bullet points per section.`;
+                    break;
+            }
+
+            try {
+                const data = await fetchAPI('/generate', 'POST', { prompt: prompt });
+                if (data.error) throw new Error(data.error);
+                swotResponse.textContent = data.output || 'No SWOT points generated.';
+            } catch (e) {
+                swotResponse.textContent = `SWOT generation failed: ${e.message}.`;
+            } finally {
+                setLoadingState(generateSwotBtn, swotResponse, false);
+            }
+        });
+
+        // Startup Idea Analyzer Form (NEW)
+        ideaAnalyzerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoadingState(analyzeIdeaBtn, ideaAnalyzerResponse, true);
+
+            const startupIdea = startupIdeaInput.value.trim();
+            if (!startupIdea) {
+                ideaAnalyzerResponse.textContent = 'Please describe your startup idea.';
+                setLoadingState(analyzeIdeaBtn, ideaAnalyzerResponse, false);
+                return;
+            }
+
+            const prompt = `Analyze the following startup idea and provide a brief overview feedback, including potential viability or challenges related to profit/loss and market fit:\n\nIdea: "${startupIdea}"\n\nFeedback:`;
+
+            try {
+                const data = await fetchAPI('/generate', 'POST', { prompt: prompt });
+                if (data.error) throw new Error(data.error);
+                ideaAnalyzerResponse.textContent = data.output || 'Could not analyze the idea.';
+            } catch (e) {
+                ideaAnalyzerResponse.textContent = `Idea analysis failed: ${e.message}.`;
+            } finally {
+                setLoadingState(analyzeIdeaBtn, ideaAnalyzerResponse, false);
+            }
+        });
+
+
+        // ROI Calculator Form
+        roiCalculatorForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            setLoadingState(calculateRoiBtn, roiResponse, true);
+
+            const initialInvestment = parseFloat(initialInvestmentInput.value);
+            const startupSize = startupSizeSelect.value;
+            const timePeriodMonths = parseInt(timePeriodSelect.value);
+
+            if (isNaN(initialInvestment) || initialInvestment <= 0) {
+                roiResponse.textContent = 'Please enter a valid initial investment amount.';
+                setLoadingState(calculateRoiBtn, roiResponse, false);
+                return;
+            }
+
+            // Illustrative ROI percentages (these are completely made up for demonstration)
+            // These rates are designed to show a general trend, not provide financial advice.
+            const roiRates = {
+                'small': { '3': 0.05, '6': 0.15, '12': 0.30, '24': 0.60 }, // Higher percentage ROI on smaller investment
+                'medium': { '3': 0.03, '6': 0.10, '12': 0.25, '24': 0.50 },
+                'large': { '3': 0.02, '6': 0.08, '12': 0.20, '24': 0.40 } // Lower percentage ROI on larger investment, but higher absolute profit
+            };
+
+            const roiPercentage = roiRates[startupSize][timePeriodMonths] || 0;
+            const projectedReturn = initialInvestment * (1 + roiPercentage);
+            const netProfit = projectedReturn - initialInvestment;
+            const actualRoi = (netProfit / initialInvestment) * 100;
+
+            roiResponse.textContent = `--- Illustrative ROI Projection ---\n` +
+                                      `Initial Investment: $${initialInvestment.toLocaleString()}\n` +
+                                      `Startup Size: ${startupSize.charAt(0).toUpperCase() + startupSize.slice(1)}\n` +
+                                      `Time Period: ${timePeriodMonths} Months\n` +
+                                      `\nProjected Return: $${projectedReturn.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n` +
+                                      `Net Profit: $${netProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n` +
+                                      `Illustrative ROI: ${actualRoi.toFixed(2)}%`;
+
+            setLoadingState(calculateRoiBtn, roiResponse, false);
+        });
+
+
+        // AI Fact Button
+        aiFactBtn.addEventListener('click', async () => {
+            setLoadingState(aiFactBtn, aiFactResponse, true);
+            try {
+                const data = await fetchAPI('/generate', 'POST', { prompt: 'Tell me a random interesting AI fact or insight relevant to business innovation.' });
+                if (data.error) throw new Error(data.error);
+                aiFactResponse.textContent = data.output || 'No AI fact returned.';
+            } catch (e) {
+                aiFactResponse.textContent = `Failed to get AI fact: ${e.message}.`;
+            } finally {
+                setLoadingState(aiFactBtn, aiFactResponse, false);
+            }
+        });
+
+    </script>
 
 </body>
 </html>
