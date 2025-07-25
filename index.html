@@ -1,963 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Startup Insight AI: Overview Summarizer & Strategic Tools</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #4A90E2; /* Blue */
-            --secondary-color: #50E3C2; /* Teal */
-            --dark-bg: #2C3E50; /* Dark Blue Gray */
-            --light-bg: #F8F9FA; /* Light Gray */
-            --text-color: #333;
-            --light-text-color: #666;
-            --border-color: #E0E0E0;
-            --success-color: #28A745;
-            --danger-color: #DC3545;
-            --warning-color: #FFC107;
-            --card-bg: #FFFFFF;
-            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --shadow-strong: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InvestIQ – Startup Rater</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f5f5f5;
+      color: #333;
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 2rem;
+      background: white;
+      margin-top: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
 
-        header {
-            background-color: var(--dark-bg);
-            color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow-strong);
-            flex-wrap: wrap; /* Allow wrapping on small screens */
-            gap: 10px; /* Spacing between elements */
-        }
-        header h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            font-weight: 600;
-        }
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 8px;
-            background-color: gray; /* Default */
-            transition: background-color 0.3s ease;
-        }
-        .status-dot.online { background-color: var(--success-color); }
-        .status-dot.offline { background-color: var(--danger-color); }
-        .status-dot.checking { background-color: var(--warning-color); }
+    h1 {
+      font-size: 2rem;
+      color: #2c3e50;
+    }
 
-        .container {
-            flex-grow: 1;
-            width: 100%;
-            max-width: 1000px;
-            margin: 1.5rem auto;
-            padding: 0 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
+    textarea, input {
+      width: 100%;
+      padding: 1rem;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: vertical;
+    }
 
-        .tab-navigation {
-            display: flex;
-            justify-content: center;
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: var(--shadow-light);
-            overflow: hidden;
-            padding: 0.5rem;
-            flex-wrap: wrap; /* Allow wrapping on small screens */
-        }
-        .tab-button {
-            flex: 1;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            background-color: transparent;
-            color: var(--light-text-color);
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-bottom: 3px solid transparent;
-            white-space: nowrap;
-        }
-        .tab-button:hover {
-            color: var(--primary-color);
-        }
-        .tab-button.active {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color);
-            font-weight: 600;
-        }
+    button {
+      padding: 1rem 2rem;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
 
-        .tab-content {
-            background-color: var(--card-bg);
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: var(--shadow-light);
-            display: none; /* Hidden by default */
-        }
-        .tab-content.active {
-            display: block;
-        }
+    button:hover {
+      background: #1a242f;
+    }
 
-        h2 {
-            color: var(--dark-bg);
-            font-size: 1.5rem;
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.5rem;
-        }
-        h3 {
-            color: var(--dark-bg);
-            font-size: 1.2rem;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-        }
+    .card {
+      background: #eef2f7;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      white-space: pre-wrap;
+    }
 
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-        label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: var(--text-color);
-        }
-        input[type="text"],
-        input[type="number"],
-        textarea,
-        select {
-            width: calc(100% - 24px); /* Account for padding */
-            padding: 12px;
-            font-size: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            background-color: var(--light-bg);
-            color: var(--text-color);
-        }
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        textarea:focus,
-        select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
-            outline: none;
-            background-color: white;
-        }
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
+    .news-container {
+      margin-top: 1rem;
+    }
 
-        button {
-            padding: 12px 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            background-color: var(--primary-color);
-            border: none;
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        button:hover:not(:disabled) {
-            background-color: #3a7bd5; /* Darker primary */
-            transform: translateY(-1px);
-        }
-        button:disabled {
-            background-color: #B0C4DE; /* Lighter gray blue */
-            cursor: not-allowed;
-        }
-
-        .loader {
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .response-box {
-            margin-top: 1.5rem;
-            background: var(--light-bg);
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
-            white-space: pre-wrap;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.95rem;
-            color: var(--dark-bg);
-            min-height: 120px;
-            border: 1px dashed var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            cursor: text; /* Indicate it's selectable */
-        }
-        .response-box:empty:before {
-            content: 'AI insights will appear here...';
-            color: var(--light-text-color);
-        }
-
-        .note {
-            font-size: 0.85rem;
-            color: var(--light-text-color);
-            margin-top: 0.5rem;
-        }
-        .disclaimer {
-            font-size: 0.8rem;
-            color: var(--danger-color);
-            margin-top: 1rem;
-            padding: 0.8rem;
-            border: 1px solid var(--danger-color);
-            border-radius: 5px;
-            background-color: rgba(220, 53, 69, 0.05);
-        }
-
-        footer {
-            margin-top: 2rem;
-            padding: 1rem 2rem;
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--light-text-color);
-            border-top: 1px solid var(--border-color);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                padding: 1rem;
-                text-align: center;
-            }
-            header h1 {
-                margin-bottom: 0.5rem;
-            }
-            .tab-navigation {
-                flex-wrap: wrap;
-                padding: 0.2rem;
-            }
-            .tab-button {
-                flex: none;
-                width: 100%;
-                border-bottom: none;
-                border-top: 1px solid var(--border-color);
-                border-radius: 0;
-            }
-            .tab-button:first-child {
-                border-top: none;
-            }
-            .tab-button.active {
-                border-bottom: none;
-                border-left: 3px solid var(--primary-color);
-            }
-            .container {
-                padding: 0 1rem;
-            }
-            .tab-content {
-                padding: 1.5rem 1rem;
-            }
-            input[type="text"],
-            input[type="number"],
-            textarea,
-            select {
-                width: calc(100% - 20px); /* Adjust padding for smaller screens */
-            }
-        }
-    </style>
+    .news-container div {
+      background: #f0f8ff;
+      margin-bottom: 10px;
+      padding: 0.8rem;
+      border-left: 4px solid #2c3e50;
+      border-radius: 6px;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>🚀 InvestIQ</h1>
+    <p>Rate your startup idea with AI and market data.</p>
 
-    <header>
-        <h1>Startup Insight AI: Overview Summarizer</h1>
-        <div class="status-indicator">
-            <span id="statusDot" class="status-dot" title="Backend connectivity status"></span>
-            Backend Status: <span id="statusText">Checking...</span>
-        </div>
-    </header>
+    <form id="ideaForm">
+      <textarea id="ideaInput" placeholder="Enter your startup idea..." required></textarea>
+      <input type="text" id="bizType" placeholder="Business Type (e.g. SaaS, Dropshipping)" />
+      <input type="text" id="market" placeholder="Target Market (e.g. Gen Z, Local Teens)" />
+      <button type="submit">Rate My Idea</button>
+    </form>
 
-    <div class="container">
-        <div class="tab-navigation">
-            <button class="tab-button active" data-tab="firm-analyzer">Firm Overview Analyzer</button>
-            <button class="tab-button" data-tab="startup-insight-hub">Startup Insight Hub</button>
-            <button class="tab-button" data-tab="ai-insights">AI Insights & Web Search</button>
-        </div>
+    <div id="result" class="card"></div>
 
-        <div id="firm-analyzer" class="tab-content active">
-            <h2>Analyze a Firm Overview</h2>
-            <form id="firmAnalysisForm" autocomplete="off">
-                <div class="form-group">
-                    <label for="firmUrl">Firm Website URL:</label>
-                    <input type="text" id="firmUrl" name="firmUrl" placeholder="e.g., https://www.acme-startup.com" required />
-                    <p class="note">Provide the main website URL of the startup or firm you want to analyze.</p>
-                </div>
-                <div class="form-group">
-                    <label for="analysisFocus">Focus of Analysis (Optional):</label>
-                    <textarea id="analysisFocus" name="analysisFocus" rows="3" placeholder="e.g., 'Summarize their business model and target market.' or 'Identify their core strengths and potential opportunities.'"></textarea>
-                    <p class="note">Specify what you want the AI to focus on. If left blank, it will provide a general overview.</p>
-                </div>
-                <button type="submit" id="analyzeFirmBtn">
-                    Analyze Firm
-                </button>
-            </form>
-            <div class="response-box clickable-response" id="firmAnalysisResponse">
-                <p class="note">Click on any word in the response to search the web for it.</p>
-            </div>
-        </div>
+    <h2>📈 Market News</h2>
+    <div id="news" class="news-container"></div>
+  </div>
 
-        <div id="startup-insight-hub" class="tab-content">
-            <h2>Startup Insight Hub: Idea & Strategy Tools</h2>
+  <script>
+    const form = document.getElementById("ideaForm");
+    const resultBox = document.getElementById("result");
+    const newsBox = document.getElementById("news");
 
-            <h3>Startup Idea & Business Model Feedback</h3>
-            <form id="startupIdeaForm" autocomplete="off">
-                <div class="form-group">
-                    <label for="startupIdeaDescription">Describe Your Startup Idea:</label>
-                    <textarea id="startupIdeaDescription" name="startupIdeaDescription" rows="5" placeholder="e.g., 'A mobile app connecting local farmers directly with consumers for fresh produce delivery, focusing on sustainability and fair pricing.'"></textarea>
-                    <p class="note">Provide a clear and concise description of your core offering, target market, and unique selling proposition.</p>
-                </div>
-                <div class="form-group">
-                    <label for="businessModelType">Primary Business Model:</label>
-                    <select id="businessModelType" name="businessModelType">
-                        <option value="SaaS">SaaS (Software as a Service)</option>
-                        <option value="eCommerce">eCommerce / Online Retail</option>
-                        <option value="dropshipping">Dropshipping</option>
-                        <option value="inPersonService">In-person Service (e.g., consulting, local services)</option>
-                        <option value="marketplace">Marketplace (connecting buyers/sellers)</option>
-                        <option value="subscriptionBox">Subscription Box</option>
-                        <option value="freemium">Freemium</option>
-                        <option value="adBased">Ad-based (e.g., free content supported by ads)</option>
-                        <option value="other">Other / Hybrid</option>
-                    </select>
-                    <p class="note">How do you primarily deliver value?</p>
-                </div>
-                <div class="form-group">
-                    <label for="revenueModel">Primary Revenue Model (How do you get paid?):</label>
-                    <select id="revenueModel" name="revenueModel">
-                        <option value="subscription">Subscription (recurring fees)</option>
-                        <option value="transactionFee">Transaction/Commission Fee</option>
-                        <option value="productSales">Direct Product Sales</option>
-                        <option value="serviceFee">Service Fee (per hour/project)</option>
-                        <option value="advertising">Advertising Revenue</option>
-                        <option value="licensing">Licensing / Royalties</option>
-                        <option value="dataSales">Data Sales</option>
-                        <option value="freemiumUpgrade">Freemium Upgrades</option>
-                        <option value="other">Other / Mixed</option>
-                    </select>
-                    <p class="note">What is your main source of income?</p>
-                </div>
-                <div class="form-group">
-                    <label for="targetAudience">Target Customer / Niche:</label>
-                    <input type="text" id="targetAudience" name="targetAudience" placeholder="e.g., 'Small independent coffee shops in urban areas'" />
-                    <p class="note">Who are your ideal customers?</p>
-                </div>
-                <div class="form-group">
-                    <label for="uniqueSellingProposition">Unique Value Proposition (Optional):</label>
-                    <textarea id="uniqueSellingProposition" name="uniqueSellingProposition" rows="2" placeholder="e.g., 'We offer the fastest delivery and personalized customer service that no one else can match.'"></textarea>
-                    <p class="note">What makes you different and better than alternatives?</p>
-                </div>
-                <div class="form-group">
-                    <label for="additionalIdeaInfo">Additional Information (Optional):</label>
-                    <textarea id="additionalIdeaInfo" name="additionalIdeaInfo" rows="3" placeholder="e.g., 'We plan to use AI for personalized recommendations.'"></textarea>
-                    <p class="note">Any other relevant details, challenges, or plans.</p>
-                </div>
-                <button type="submit" id="analyzeStartupIdeaBtn">
-                    Get Idea Feedback & Viability
-                </button>
-            </form>
-            <div class="response-box" id="startupIdeaResponse"></div>
+    // 🔁 Change this to your actual backend URL
+    const BACKEND_URL = "https://your-vercel-project-name.vercel.app";
 
-            <h3 style="margin-top: 2.5rem;">Competitive Landscape Analysis</h3>
-            <form id="competitiveAnalysisForm" autocomplete="off">
-                 <div class="form-group">
-                    <label for="competitiveIdeaDescription">Your Startup Idea (for competitive analysis):</label>
-                    <textarea id="competitiveIdeaDescription" name="competitiveIdeaDescription" rows="3" placeholder="e.g., 'A mobile app connecting local farmers directly with consumers for fresh produce delivery...'"></textarea>
-                    <p class="note">Describe your idea for competitive analysis. You can also click the button below to use the description from the 'Startup Idea & Business Model Feedback' section above.</p>
-                    <button type="button" id="useCurrentIdeaBtn" style="margin-top: 0.5rem; background-color: #6c757d;">Use Idea from Above</button>
-                </div>
-                <button type="submit" id="analyzeCompetitiveBtn">
-                    Analyze Competitive Landscape
-                </button>
-            </form>
-            <div class="response-box" id="competitiveAnalysisResponse"></div>
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      resultBox.textContent = "Analyzing...";
 
+      const idea = document.getElementById("ideaInput").value;
+      const bizType = document.getElementById("bizType").value;
+      const market = document.getElementById("market").value;
 
-            <h3 style="margin-top: 2.5rem;">Idea & Brainstorming Generator</h3>
-            <form id="ideaGeneratorForm" autocomplete="off">
-                <div class="form-group">
-                    <label for="ideaPrompt">Generate Ideas For:</label>
-                    <textarea id="ideaPrompt" name="ideaPrompt" rows="3" placeholder="e.g., 'innovative marketing slogans for a sustainable tech product', 'strategic partnership opportunities for a fintech startup', '3 unique business ideas in the remote work sector'"></textarea>
-                    <p class="note">Describe what kind of ideas or text you need. Be specific!</p>
-                </div>
-                <button type="submit" id="generateIdeaBtn">
-                    Generate Idea
-                </button>
-            </form>
-            <div class="response-box" id="ideaGeneratorResponse"></div>
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/rate-idea?idea=${encodeURIComponent(idea)}&businessType=${bizType}&targetMarket=${market}`);
+        const data = await res.json();
+        resultBox.textContent = data.result || "No result returned.";
+      } catch (err) {
+        resultBox.textContent = "Error contacting backend.";
+      }
+    });
 
-            <h3 style="margin-top: 2.5rem;">SWOT Analysis Assistant (Beta)</h3>
-            <form id="swotAssistantForm" autocomplete="off">
-                <div class="form-group">
-                    <label for="swotCompany">Company/Project Name (for SWOT):</label>
-                    <input type="text" id="swotCompany" name="swotCompany" placeholder="e.g., 'My New SaaS Platform'" />
-                    <p class="note">Provide a brief context for the SWOT analysis.</p>
-                </div>
-                 <div class="form-group">
-                    <label for="swotType">Generate:</label>
-                    <select id="swotType" name="swotType">
-                        <option value="strengths">Strengths</option>
-                        <option value="weaknesses">Weaknesses</option>
-                        <option value="opportunities">Opportunities</option>
-                        <option value="threats">Threats</option>
-                        <option value="full_swot">Full SWOT (Brief)</option>
-                    </select>
-                </div>
-                <button type="submit" id="generateSwotBtn">
-                    Generate SWOT Points
-                </button>
-            </form>
-            <div class="response-box" id="swotResponse"></div>
+    // Optional: Load Market News
+    async function loadNews() {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/news`);
+        const data = await res.json();
 
-            <h3 style="margin-top: 2.5rem;">Illustrative ROI Calculator</h3>
-            <form id="roiCalculatorForm">
-                <div class="form-group">
-                    <label for="initialInvestment">Initial Investment ($):</label>
-                    <input type="number" id="initialInvestment" min="1" value="100000" required>
-                </div>
-                <div class="form-group">
-                    <label for="startupSize">Startup Size:</label>
-                    <select id="startupSize">
-                        <option value="small">Small (e.g., bootstrapped, lean)</option>
-                        <option value="medium">Medium (e.g., seed-funded, growing team)</option>
-                        <option value="large">Large (e.g., Series A+, established)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="timePeriod">Time Period:</label>
-                    <select id="timePeriod">
-                        <option value="3">3 Months</option>
-                        <option value="6">6 Months</option>
-                        <option value="12">12 Months</option>
-                        <option value="24">24 Months</option>
-                    </select>
-                </div>
-                <button type="submit" id="calculateRoiBtn">Calculate Illustrative ROI</button>
-            </form>
-            <div class="response-box" id="roiResponse"></div>
-            <p class="disclaimer">
-                <strong>Disclaimer:</strong> This ROI calculator provides *illustrative* projections based on simplified assumptions and is not powered by AI. It is not financial advice. Actual results will vary significantly.
-            </p>
-        </div>
-
-        <div id="ai-insights" class="tab-content">
-            <h2>AI Insights & System Status</h2>
-            <p>This section provides general AI insights and allows you to manually check the backend service status.</p>
-            <button id="checkStatusBtn">
-                Check Backend Status
-            </button>
-            <div class="response-box clickable-response" id="generalStatusResponse" style="margin-top: 1rem;">
-                 <p class="note">Click on any word in the response to search the web for it.</p>
-            </div>
-
-            <h3 style="margin-top: 2.5rem;">Random AI Fact</h3>
-            <button id="aiFactBtn">
-                Get a Random AI Fact
-            </button>
-            <div class="response-box clickable-response" id="aiFactResponse" style="margin-top: 1rem;">
-                <p class="note">Click on any word in the response to search the web for it.</p>
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        <p>&copy; 2025 Startup Insight AI. All rights reserved. <br> Powered by small language models for rapid insights on free-tier infrastructure.</p>
-    </footer>
-
-    <script>
-        // ** IMPORTANT: Replace with your actual Render backend URL **
-        const backendBaseURL = 'https://startupinsight-backend.onrender.com';
-
-        // UI Elements
-        const statusDot = document.getElementById('statusDot');
-        const statusText = document.getElementById('statusText');
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        // Firm Analyzer
-        const firmAnalysisForm = document.getElementById('firmAnalysisForm');
-        const firmUrlInput = document.getElementById('firmUrl');
-        const analysisFocusInput = document.getElementById('analysisFocus');
-        const analyzeFirmBtn = document.getElementById('analyzeFirmBtn');
-        const firmAnalysisResponse = document.getElementById('firmAnalysisResponse');
-
-        // Startup Insight Hub (formerly Management Assistant)
-        // Startup Idea & Business Model Feedback
-        const startupIdeaForm = document.getElementById('startupIdeaForm');
-        const startupIdeaDescriptionInput = document.getElementById('startupIdeaDescription');
-        const businessModelTypeSelect = document.getElementById('businessModelType');
-        const revenueModelSelect = document.getElementById('revenueModel');
-        const targetAudienceInput = document.getElementById('targetAudience');
-        const uniqueSellingPropositionInput = document.getElementById('uniqueSellingProposition');
-        const additionalIdeaInfoInput = document.getElementById('additionalIdeaInfo');
-        const analyzeStartupIdeaBtn = document.getElementById('analyzeStartupIdeaBtn');
-        const startupIdeaResponse = document.getElementById('startupIdeaResponse');
-
-        // Competitive Landscape Analysis
-        const competitiveAnalysisForm = document.getElementById('competitiveAnalysisForm');
-        const competitiveIdeaDescriptionInput = document.getElementById('competitiveIdeaDescription');
-        const useCurrentIdeaBtn = document.getElementById('useCurrentIdeaBtn');
-        const analyzeCompetitiveBtn = document.getElementById('analyzeCompetitiveBtn');
-        const competitiveAnalysisResponse = document.getElementById('competitiveAnalysisResponse');
-
-        // Idea & Brainstorming Generator
-        const ideaGeneratorForm = document.getElementById('ideaGeneratorForm');
-        const ideaPromptInput = document.getElementById('ideaPrompt');
-        const generateIdeaBtn = document.getElementById('generateIdeaBtn');
-        const ideaGeneratorResponse = document.getElementById('ideaGeneratorResponse');
-
-        // SWOT Assistant
-        const swotAssistantForm = document.getElementById('swotAssistantForm');
-        const swotCompanyInput = document.getElementById('swotCompany');
-        const swotTypeSelect = document.getElementById('swotType');
-        const generateSwotBtn = document.getElementById('generateSwotBtn');
-        const swotResponse = document.getElementById('swotResponse');
-
-        // ROI Calculator
-        const roiCalculatorForm = document.getElementById('roiCalculatorForm');
-        const initialInvestmentInput = document.getElementById('initialInvestment');
-        const startupSizeSelect = document.getElementById('startupSize');
-        const timePeriodSelect = document.getElementById('timePeriod');
-        const calculateRoiBtn = document.getElementById('calculateRoiBtn');
-        const roiResponse = document.getElementById('roiResponse');
-
-        // AI Insights & Web Search
-        const checkStatusBtn = document.getElementById('checkStatusBtn');
-        const generalStatusResponse = document.getElementById('generalStatusResponse');
-        const aiFactBtn = document.getElementById('aiFactBtn');
-        const aiFactResponse = document.getElementById('aiFactResponse');
-
-        // --- Utility Functions ---
-        function updateBackendStatusUI(status, qaStatus = '', genStatus = '') {
-            statusText.textContent = status;
-            statusDot.classList.remove('online', 'offline', 'checking');
-            if (status === 'Online') {
-                statusDot.classList.add('online');
-                statusDot.title = `Backend online. QA Model: ${qaStatus}, Gen Model: ${genStatus}.`;
-            } else if (status === 'Offline') {
-                statusDot.classList.add('offline');
-                statusDot.title = `Backend offline. QA Model: ${qaStatus}, Gen Model: ${genStatus}.`;
-            } else { // e.g., 'Checking...' or 'Degraded'
-                statusDot.classList.add('checking');
-                statusDot.title = `Backend status: ${status}. QA Model: ${qaStatus}, Gen Model: ${genStatus}.`;
-            }
+        if (data.news) {
+          newsBox.innerHTML = data.news.map(article =>
+            `<div><strong>${article.title}</strong><br><a href="${article.url}" target="_blank">Read more</a></div>`
+          ).join("");
         }
+      } catch {
+        newsBox.innerHTML = "<p>News feed not available.</p>";
+      }
+    }
 
-        async function fetchAPI(endpoint, method = 'GET', body = null) {
-            const options = {
-                method: method,
-                headers: { 'Content-Type': 'application/json' },
-            };
-            if (body) {
-                options.body = JSON.stringify(body);
-            }
-
-            try {
-                const res = await fetch(backendBaseURL + endpoint, options);
-                if (!res.ok) {
-                    const errorData = await res.json().catch(() => ({}));
-                    throw new Error(errorData.error || `HTTP error! Status: ${res.status}`);
-                }
-                return await res.json();
-            } catch (e) {
-                console.error(`Fetch error for ${endpoint}:`, e);
-                throw new Error(`API Request Failed: ${e.message}`);
-            }
-        }
-
-        function setLoadingState(button, responseBox, isLoading) {
-            if (isLoading) {
-                button.disabled = true;
-                button.innerHTML = `Processing <span class="loader"></span>`;
-                responseBox.innerHTML = '<p class="note">AI is thinking...</p>';
-            } else {
-                button.disabled = false;
-                // Restore original button text based on its ID
-                if (button === analyzeFirmBtn) button.textContent = 'Analyze Firm';
-                else if (button === generateIdeaBtn) button.textContent = 'Generate Idea';
-                else if (button === generateSwotBtn) button.textContent = 'Generate SWOT Points';
-                else if (button === analyzeStartupIdeaBtn) button.textContent = 'Get Idea Feedback & Viability'; // Updated text
-                else if (button === analyzeCompetitiveBtn) button.textContent = 'Analyze Competitive Landscape'; // New button
-                else if (button === checkStatusBtn) button.textContent = 'Check Backend Status';
-                else if (button === aiFactBtn) button.textContent = 'Get a Random AI Fact';
-                else if (button === calculateRoiBtn) button.textContent = 'Calculate Illustrative ROI';
-            }
-        }
-
-        // --- Tab Logic ---
-        function activateTab(tabId) {
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-            });
-            tabButtons.forEach(button => {
-                button.classList.remove('active');
-            });
-
-            document.getElementById(tabId).classList.add('active');
-            document.querySelector(`.tab-button[data-tab="${tabId}"]`).classList.add('active');
-        }
-
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.dataset.tab;
-                activateTab(tabId);
-            });
-        });
-
-        // --- Click-to-Search Feature ---
-        function setupClickToSearch(responseBoxElement) {
-            responseBoxElement.addEventListener('click', (event) => {
-                let selectedText = window.getSelection().toString().trim();
-                if (selectedText) {
-                    // If text is selected, use it
-                    performWebSearch(selectedText);
-                } else {
-                    // If no text is selected, try to get the word under the cursor
-                    const target = event.target;
-                    if (target && target.nodeType === Node.TEXT_NODE) {
-                        const range = document.caretRangeFromPoint(event.clientX, event.clientY);
-                        if (range) {
-                            const start = range.startOffset;
-                            const textNode = range.startContainer;
-                            const fullText = textNode.textContent;
-
-                            // Find word boundaries
-                            let wordStart = start;
-                            while (wordStart > 0 && /\w/.test(fullText[wordStart - 1])) {
-                                wordStart--;
-                            }
-                            let wordEnd = start;
-                            while (wordEnd < fullText.length && /\w/.test(fullText[wordEnd])) {
-                                wordEnd++;
-                            }
-                            const word = fullText.substring(wordStart, wordEnd).trim();
-                            if (word) {
-                                performWebSearch(word);
-                            }
-                        }
-                    } else if (target.textContent && target.textContent.trim()) {
-                        // Fallback for clicks on non-text nodes within the box
-                        // This might search the entire content, or just the clicked element's text
-                        performWebSearch(target.textContent.trim().split(/\s+/)[0]); // Just take the first word
-                    }
-                }
-            });
-        }
-
-        function performWebSearch(query) {
-            if (query) {
-                const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-                window.open(searchUrl, '_blank');
-            }
-        }
-
-        // Apply click-to-search to relevant response boxes
-        setupClickToSearch(firmAnalysisResponse);
-        setupClickToSearch(generalStatusResponse);
-        setupClickToSearch(aiFactResponse);
-        setupClickToSearch(startupIdeaResponse); // New
-        setupClickToSearch(competitiveAnalysisResponse); // New
-
-        // --- Event Listeners ---
-
-        // Initial backend status check on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            checkBackendStatus();
-            activateTab('firm-analyzer'); // Default tab on load
-        });
-
-        // Backend Status Check
-        checkStatusBtn.addEventListener('click', checkBackendStatus);
-        async function checkBackendStatus() {
-            updateBackendStatusUI('Checking...');
-            generalStatusResponse.innerHTML = '<p class="note">Checking backend status...</p>';
-            try {
-                const data = await fetchAPI('/status');
-                if (data.status === 'online') {
-                    updateBackendStatusUI('Online', data.qa_model_status, data.gen_model_status);
-                    generalStatusResponse.textContent = `Backend is online and ready.\nQA Model: ${data.qa_model_status}\nGeneration Model: ${data.gen_model_status}.`;
-                } else {
-                    updateBackendStatusUI('Degraded', data.qa_model_status, data.gen_model_status);
-                    generalStatusResponse.textContent = `Backend responded but status is '${data.status}'.\nQA Model: ${data.qa_model_status}\nGeneration Model: ${data.gen_model_status}.`;
-                }
-            } catch (e) {
-                updateBackendStatusUI('Offline', 'failed', 'failed');
-                generalStatusResponse.textContent = `Error connecting to backend: ${e.message}. Please ensure the backend is running and accessible.`;
-            }
-        }
-
-        // Firm Analysis Form
-        firmAnalysisForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            setLoadingState(analyzeFirmBtn, firmAnalysisResponse, true);
-
-            const firmUrl = firmUrlInput.value.trim();
-            const analysisFocus = analysisFocusInput.value.trim();
-
-            if (!firmUrl) {
-                firmAnalysisResponse.textContent = 'Please provide a Firm Website URL.';
-                setLoadingState(analyzeFirmBtn, firmAnalysisResponse, false);
-                return;
-            }
-
-            let question = "Provide a concise overview of this company, its core business, and key offerings.";
-            if (analysisFocus) {
-                question = `${analysisFocus} based on the content of this page.`;
-            } else {
-                 question += " Also, briefly mention any key figures or funding if clearly stated. Keep the summary focused and professional.";
-            }
-
-            try {
-                const data = await fetchAPI('/ask', 'POST', { question: question, url: firmUrl });
-                if (data.error) throw new Error(data.error);
-
-                firmAnalysisResponse.textContent = `Analysis of ${firmUrl}:\n\n${data.answer || 'No specific analysis found.'}\n\n(Confidence: ${(data.score * 100).toFixed(2)}%)`;
-            } catch (e) {
-                firmAnalysisResponse.textContent = `Analysis failed: ${e.message}. Ensure the URL is correct and accessible. The AI may not find relevant information if the content is sparse or protected.`;
-            } finally {
-                setLoadingState(analyzeFirmBtn, firmAnalysisResponse, false);
-            }
-        });
-
-        // Startup Idea & Business Model Feedback Form (NEW/ENHANCED)
-        startupIdeaForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            setLoadingState(analyzeStartupIdeaBtn, startupIdeaResponse, true);
-
-            const ideaDescription = startupIdeaDescriptionInput.value.trim();
-            const businessModel = businessModelTypeSelect.value;
-            const revenueModel = revenueModelSelect.value;
-            const targetAudience = targetAudienceInput.value.trim();
-            const uniqueSellingProposition = uniqueSellingPropositionInput.value.trim();
-            const additionalInfo = additionalIdeaInfoInput.value.trim();
-
-            if (!ideaDescription) {
-                startupIdeaResponse.textContent = 'Please describe your startup idea.';
-                setLoadingState(analyzeStartupIdeaBtn, startupIdeaResponse, false);
-                return;
-            }
-
-            let prompt = `Analyze the following startup idea and provide comprehensive feedback focusing on its viability, potential profit/loss factors, and key challenges. Structure your response clearly, addressing each input:\n\n`;
-            prompt += `Startup Idea: "${ideaDescription}"\n`;
-            prompt += `Primary Business Model: ${businessModel}\n`;
-            prompt += `Primary Revenue Model (How you get paid): ${revenueModel}\n`;
-            prompt += `Target Customer/Niche: ${targetAudience || 'Not specified'}\n`;
-            if (uniqueSellingProposition) {
-                prompt += `Unique Value Proposition: "${uniqueSellingProposition}"\n`;
-            }
-            if (additionalInfo) {
-                prompt += `Additional Information: "${additionalInfo}"\n`;
-            }
-            prompt += `\nProvide an overview feedback on: \n1. Initial Viability/Market Fit \n2. Potential for Profit/Loss (qualitative assessment based on model/revenue) \n3. Key Strengths \n4. Potential Weaknesses/Challenges. Be realistic and concise.`;
-
-            try {
-                const data = await fetchAPI('/generate', 'POST', { prompt: prompt });
-                if (data.error) throw new Error(data.error);
-                startupIdeaResponse.textContent = data.output || 'Could not analyze the startup idea.';
-            } catch (e) {
-                startupIdeaResponse.textContent = `Startup idea analysis failed: ${e.message}.`;
-            } finally {
-                setLoadingState(analyzeStartupIdeaBtn, startupIdeaResponse, false);
-            }
-        });
-
-        // Competitive Landscape Analysis Form (NEW)
-        useCurrentIdeaBtn.addEventListener('click', () => {
-            competitiveIdeaDescriptionInput.value = startupIdeaDescriptionInput.value.trim();
-        });
-
-        competitiveAnalysisForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            setLoadingState(analyzeCompetitiveBtn, competitiveAnalysisResponse, true);
-
-            const ideaForCompetitors = competitiveIdeaDescriptionInput.value.trim();
-
-            if (!ideaForCompetitors) {
-                competitiveAnalysisResponse.textContent = 'Please provide your startup idea for competitive analysis.';
-                setLoadingState(analyzeCompetitiveBtn, competitiveAnalysisResponse, false);
-                return;
-            }
-
-            const prompt = `Based on the startup idea: "${ideaForCompetitors}", perform the following:\n1. Identify 2-3 significant potential competitors or similar market players. For each, provide a very brief overview of what they do.\n2. Suggest 2-3 actionable strategies for how this new startup can effectively differentiate itself and engage in the market despite existing competition. Focus on unique selling points, niche targeting, or innovative approaches.`;
-
-            try {
-                const data = await fetchAPI('/generate', 'POST', { prompt: prompt });
-                if (data.error) throw new Error(data.error);
-                competitiveAnalysisResponse.textContent = data.output || 'Could not perform competitive analysis.';
-            } catch (e) {
-                competitiveAnalysisResponse.textContent = `Competitive analysis failed: ${e.message}.`;
-            } finally {
-                setLoadingState(analyzeCompetitiveBtn, competitiveAnalysisResponse, false);
-            }
-        });
-
-        // Idea Generator Form (Existing)
-        ideaGeneratorForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            setLoadingState(generateIdeaBtn, ideaGeneratorResponse, true);
-
-            const ideaPrompt = ideaPromptInput.value.trim();
-            if (!ideaPrompt) {
-                ideaGeneratorResponse.textContent = 'Please provide a prompt for idea generation.';
-                setLoadingState(generateIdeaBtn, ideaGeneratorResponse, false);
-                return;
-            }
-
-            const prompt = `Generate: ${ideaPrompt}. Keep the output concise and actionable.`;
-
-            try {
-                const data = await fetchAPI('/generate', 'POST', { prompt: prompt });
-                if (data.error) throw new Error(data.error);
-                ideaGeneratorResponse.textContent = data.output || 'No output generated.';
-            } catch (e) {
-                ideaGeneratorResponse.textContent = `Idea generation failed: ${e.message}.`;
-            } finally {
-                setLoadingState(generateIdeaBtn, ideaGeneratorResponse, false);
-            }
-        });
-
-        // SWOT Assistant Form (Existing)
-        swotAssistantForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            setLoadingState(generateSwotBtn, swotResponse, true);
-
-            const companyName = swotCompanyInput.value.trim();
-            const swotType = swotTypeSelect.value;
-
-            if (!companyName && swotType !== 'full_swot') {
-                swotResponse.textContent = 'Please provide a Company/Project Name for the SWOT analysis, or select "Full SWOT (Brief)" for a generic analysis.';
-                setLoadingState(generateSwotBtn, swotResponse, false);
-                return;
-            }
-
-            let prompt = "";
-            let target = companyName ? `for a company/project like "${companyName}"` : "for a generic startup";
-
-            switch (swotType) {
-                case 'strengths':
-                    prompt = `List 3-5 potential strengths ${target}.`;
-                    break;
-                case 'weaknesses':
-                    prompt = `List 3-5 potential weaknesses ${target}.`;
-                    break;
-                case 'opportunities':
-                    prompt = `List 3-5 potential opportunities ${target}.`;
-                    break;
-                case 'threats':
-                    prompt = `List 3-5 potential threats ${target}.`;
-                    break;
-                case 'full_swot':
-                    prompt = `Provide a very brief SWOT analysis (Strengths, Weaknesses, Opportunities, Threats) ${target}. Keep each section concise, 2-3 bullet points per section.`;
-                    break;
-            }
-
-            try {
-                const data = await fetchAPI('/generate', 'POST', { prompt: prompt });
-                if (data.error) throw new Error(data.error);
-                swotResponse.textContent = data.output || 'No SWOT points generated.';
-            } catch (e) {
-                swotResponse.textContent = `SWOT generation failed: ${e.message}.`;
-            } finally {
-                setLoadingState(generateSwotBtn, swotResponse, false);
-            }
-        });
-
-        // ROI Calculator Form (Existing)
-        roiCalculatorForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            setLoadingState(calculateRoiBtn, roiResponse, true);
-
-            const initialInvestment = parseFloat(initialInvestmentInput.value);
-            const startupSize = startupSizeSelect.value;
-            const timePeriodMonths = parseInt(timePeriodSelect.value);
-
-            if (isNaN(initialInvestment) || initialInvestment <= 0) {
-                roiResponse.textContent = 'Please enter a valid initial investment amount.';
-                setLoadingState(calculateRoiBtn, roiResponse, false);
-                return;
-            }
-
-            // Illustrative ROI percentages (these are completely made up for demonstration)
-            // These rates are designed to show a general trend, not provide financial advice.
-            const roiRates = {
-                'small': { '3': 0.05, '6': 0.15, '12': 0.30, '24': 0.60 }, // Higher percentage ROI on smaller investment
-                'medium': { '3': 0.03, '6': 0.10, '12': 0.25, '24': 0.50 },
-                'large': { '3': 0.02, '6': 0.08, '12': 0.20, '24': 0.40 } // Lower percentage ROI on larger investment, but higher absolute profit
-            };
-
-            const roiPercentage = roiRates[startupSize][timePeriodMonths] || 0;
-            const projectedReturn = initialInvestment * (1 + roiPercentage);
-            const netProfit = projectedReturn - initialInvestment;
-            const actualRoi = (netProfit / initialInvestment) * 100;
-
-            roiResponse.textContent = `--- Illustrative ROI Projection ---\n` +
-                                      `Initial Investment: $${initialInvestment.toLocaleString()}\n` +
-                                      `Startup Size: ${startupSize.charAt(0).toUpperCase() + startupSize.slice(1)}\n` +
-                                      `Time Period: ${timePeriodMonths} Months\n` +
-                                      `\nProjected Return: $${projectedReturn.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n` +
-                                      `Net Profit: $${netProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n` +
-                                      `Illustrative ROI: ${actualRoi.toFixed(2)}%`;
-
-            setLoadingState(calculateRoiBtn, roiResponse, false);
-        });
-
-
-        // AI Fact Button (Existing)
-        aiFactBtn.addEventListener('click', async () => {
-            setLoadingState(aiFactBtn, aiFactResponse, true);
-            try {
-                const data = await fetchAPI('/generate', 'POST', { prompt: 'Tell me a random interesting AI fact or insight relevant to business innovation.' });
-                if (data.error) throw new Error(data.error);
-                aiFactResponse.textContent = data.output || 'No AI fact returned.';
-            } catch (e) {
-                aiFactResponse.textContent = `Failed to get AI fact: ${e.message}.`;
-            } finally {
-                setLoadingState(aiFactBtn, aiFactResponse, false);
-            }
-        });
-
-    </script>
-
+    loadNews();
+  </script>
 </body>
 </html>
